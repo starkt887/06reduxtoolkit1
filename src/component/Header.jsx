@@ -2,6 +2,8 @@ import { AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, List, Li
 import React, { useContext, useEffect, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../features/userAuth/userAuthSlice';
 
 
 const drawerWidth = 240;
@@ -41,14 +43,16 @@ const privateNavItems = [
 ];
 
 const Header = () => {
-    const [isLoggedIn, setisLoggedIn] = useState(false)
+    const isLoggedIn = useSelector((state) => state.userAuthReducer.isLoggedIn)
+    const dispatch = useDispatch()
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [navItems, setNavItems] = useState([])
 
     useEffect(() => {
+        // console.log(isLoggedIn);
         if (isLoggedIn) {
-            setNavItems([...publicNavItems,...privateNavItems])
+            setNavItems([...publicNavItems, ...privateNavItems])
         } else {
             setNavItems(publicNavItems)
         }
@@ -58,6 +62,9 @@ const Header = () => {
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
+    const logoutNow = () => {
+        dispatch(logout())
+    }
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -80,7 +87,7 @@ const Header = () => {
                 {
                     isLoggedIn ?
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => { }} sx={{ textAlign: 'center' }}>
+                            <ListItemButton onClick={logoutNow} sx={{ textAlign: 'center' }}>
                                 <ListItemText primary="Logout" />
                             </ListItemButton>
                         </ListItem>
@@ -129,7 +136,7 @@ const Header = () => {
                             {
                                 isLoggedIn ?
 
-                                    <Button onClick={() => { }} sx={{ color: '#fff' }}>
+                                    <Button onClick={logoutNow} sx={{ color: '#fff' }}>
                                         Logout
                                     </Button>
                                     :
